@@ -1,5 +1,14 @@
 -- RiverGuard AI Platform v1.0 — 初始化数据库
--- PostgreSQL
+-- PostgreSQL 16
+--
+-- 使用方式 (pgAdmin / DBeaver / 命令行):
+--   第一步: 连接到 postgres 数据库，执行下方被注释的建库语句（仅首次）
+--   第二步: 切换到 riverguard_ai_db 数据库，执行下方所有建表 + 数据语句
+
+-- ========== 第一步：建库（仅首次，连接到 postgres 库执行）==========
+-- CREATE DATABASE riverguard_ai_db;
+
+-- ========== 第二步：建表 + 初始化数据（切换到 riverguard_ai_db 后执行以下全部内容）==========
 
 CREATE TABLE IF NOT EXISTS sys_user (
     id BIGINT PRIMARY KEY,
@@ -69,7 +78,7 @@ INSERT INTO sys_role_scope (id, role_id, manageable_role_id) VALUES (4, 2, 3) ON
 
 -- 初始化超级管理员用户 (密码: admin123, BCrypt 加密)
 INSERT INTO sys_user (id, username, password, nickname, status, create_time, update_time, deleted)
-VALUES (1, 'admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5Eh', '超级管理员', 1, NOW(), NOW(), 0)
+VALUES (1, 'admin', '$2a$10$c8/r16KOotc1VeDPbgDj4Oxsw51VxNgO1gxz1n5.T/vNFocd3sVk6', '超级管理员', 1, NOW(), NOW(), 0)
 ON CONFLICT (username) DO NOTHING;
 
 INSERT INTO sys_user_role (id, user_id, role_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;

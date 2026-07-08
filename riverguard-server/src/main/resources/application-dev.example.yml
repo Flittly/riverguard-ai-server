@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/riverguard_dev
+    url: jdbc:postgresql://localhost:5432/riverguard_ai_db_dev
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:your_dev_password}
   sql:

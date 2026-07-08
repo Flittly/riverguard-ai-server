@@ -62,10 +62,10 @@ riverguard-ai-server/
 
 ```bash
 # Create database
-createdb riverguard
+createdb riverguard_ai_db
 
 # Run initialization script
-psql -d riverguard -f docs/sql/V1__init.sql
+psql -d riverguard_ai_db -f docs/sql/V1__init.sql
 ```
 
 ### 2. Configuration — 配置

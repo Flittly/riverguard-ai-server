@@ -3,7 +3,7 @@ spring:
     name: riverguard-ai-server
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/riverguard
+    url: jdbc:postgresql://localhost:5432/riverguard_ai_db
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:your_password}
   sql:
