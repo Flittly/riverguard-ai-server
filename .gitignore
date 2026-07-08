@@ -1,0 +1,33 @@
+# Maven
+target/
+*.jar
+*.war
+*.ear
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Sensitive config (use example files instead)
+application.yml
+application-dev.yml
+application-prod.yml
+application-*.yml
+
+# But keep the example files
+!application.example.yml
+!application-dev.example.yml

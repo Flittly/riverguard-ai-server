@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: riverguard-ai-server
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/riverguard
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:your_password}
+  sql:
+    init:
+      mode: never
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+jwt:
+  secret: ${JWT_SECRET:change-this-to-a-long-random-secret-in-production}
+  expiration: 86400000
+
+logging:
+  level:
+    io.riverguard: DEBUG

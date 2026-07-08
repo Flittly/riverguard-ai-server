@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/riverguard_dev
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:your_dev_password}
+  sql:
+    init:
+      mode: always
+
+jwt:
+  secret: dev-secret-key-do-not-use-in-production-min-256-bits
+  expiration: 86400000
+
+logging:
+  level:
+    io.riverguard: DEBUG
