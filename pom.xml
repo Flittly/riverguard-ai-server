@@ -21,6 +21,7 @@
     <modules>
         <module>riverguard-common</module>
         <module>riverguard-module-system</module>
+        <module>riverguard-module-ai</module>
         <module>riverguard-server</module>
     </modules>
 
