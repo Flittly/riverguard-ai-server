@@ -31,3 +31,5 @@ application-*.yml
 # But keep the example files
 !application.example.yml
 !application-dev.example.yml
+
+reports/

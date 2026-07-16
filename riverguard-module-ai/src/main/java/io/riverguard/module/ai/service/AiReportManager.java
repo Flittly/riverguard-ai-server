@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -20,6 +22,7 @@ import java.nio.file.Path;
 public class AiReportManager {
 
     private final AiConfig config;
+    private final ReportStorageService storageService;
     private HarnessAgent agent;
 
     @PostConstruct
@@ -44,14 +47,31 @@ public class AiReportManager {
         log.info("AI Report model initialized with model: {}", ds.getModel());
     }
 
-    public String generateReport(String userId, String sessionId, String topic, String requirements) {
+    public Map<String, Object> generateReport(String userId, String sessionId, String topic, String requirements) {
         RuntimeContext ctx = RuntimeContext.builder()
                 .userId(userId)
                 .sessionId(sessionId)
                 .build();
         String prompt = buildPrompt(topic, requirements);
         Msg response = agent.call(prompt, ctx).block();
-        return response != null ? response.getTextContent() : "";
+        String content = response != null ? response.getTextContent() : "";
+
+        Map<String, Object> result = new java.util.LinkedHashMap<>();
+        result.put("topic", topic);
+        result.put("content", content);
+
+        if (!content.isEmpty()) {
+            try {
+                ReportStorageService.SaveResult saved = storageService.saveReport(topic, content);
+                result.put("id", saved.reportId());
+                result.put("createdAt", saved.createdAt());
+            } catch (IOException e) {
+                log.error("Failed to save report", e);
+                result.put("id", "error");
+                result.put("createdAt", "");
+            }
+        }
+        return result;
     }
 
     private String buildPrompt(String topic, String requirements) {
