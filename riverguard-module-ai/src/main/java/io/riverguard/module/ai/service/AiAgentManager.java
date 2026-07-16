@@ -22,9 +22,9 @@ public class AiAgentManager {
 
     private final AiConfig config;
     private OpenAIChatModel model;
-    private final Map<String, ReActAgent> sessionAgents = new ConcurrentHashMap<>();
+    private final Map<String, ReActAgent> sessionAgents = new ConcurrentHashMap<>(); //ConcurrentHashMap是线程安全支持高并发的HashMap
 
-    @PostConstruct
+    @PostConstruct // PostConstruct注解，将下面的init函数运行完，在Bean初始化完成后执行
     public void init() {
         AiConfig.DeepSeek ds = config.getDeepseek();
         this.model = OpenAIChatModel.builder()

@@ -31,13 +31,15 @@ public class AiChatController {
                 ? principal.getName() + "-" + request.getSessionId()
                 : principal.getName() + "-" + UUID.randomUUID();
 
-        SseEmitter emitter = new SseEmitter(300000L);
+        SseEmitter emitter = new SseEmitter(300000L); // 超时时间：300秒（5分钟）
 
+        // 流式编程，不需要变量接收，直接链式调用
         aiAgentManager.chatStream(sessionId, request.getMessage())
                 .subscribe(
                         event -> {
                             try {
-                                if (event instanceof TextBlockDeltaEvent e && e.getDelta() != null) {
+                                if (event instanceof TextBlockDeltaEvent e && e.getDelta() != null) // 判断类型是否为TextBlockDeltaEvent，并且防止里面的内容为null
+                                {
                                     emitter.send(SseEmitter.event()
                                             .name("delta")
                                             .data(e.getDelta()));
