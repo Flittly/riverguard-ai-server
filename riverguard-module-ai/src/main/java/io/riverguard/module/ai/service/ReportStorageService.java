@@ -3,6 +3,9 @@ package io.riverguard.module.ai.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -107,5 +110,58 @@ public class ReportStorageService {
         result.put("createdAt", meta.getOrDefault("createdAt", ""));
         result.put("content", content);
         return result;
+    }
+
+    public void updateReport(String reportId, String content) throws IOException {
+        Path reportDir = basePath.resolve(reportId);
+        if (!Files.exists(reportDir)) {
+            throw new IllegalArgumentException("Report not found: " + reportId);
+        }
+        Path mdFile = reportDir.resolve("report.md");
+        Files.writeString(mdFile, content, StandardCharsets.UTF_8);
+        log.info("Report updated: {}", reportId);
+    }
+
+    public byte[] exportToDoc(String reportId) throws IOException {
+        Path reportDir = basePath.resolve(reportId);
+        if (!Files.exists(reportDir)) {
+            throw new IllegalArgumentException("Report not found: " + reportId);
+        }
+        Path mdFile = reportDir.resolve("report.md");
+        String markdown = Files.readString(mdFile, StandardCharsets.UTF_8);
+
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        Node document = parser.parse(markdown);
+        String htmlBody = renderer.render(document);
+
+        String title = "Report";
+        Path metaFile = reportDir.resolve("meta.json");
+        if (Files.exists(metaFile)) {
+            Map<String, String> meta = MAPPER.readValue(metaFile.toFile(), Map.class);
+            title = meta.getOrDefault("topic", title);
+        }
+
+        return buildWordHtml(title, htmlBody).getBytes(StandardCharsets.UTF_8);
+    }
+
+    private String buildWordHtml(String title, String body) {
+        return """
+                <html xmlns:o="urn:schemas-microsoft-com:office:office"
+                      xmlns:w="urn:schemas-microsoft-com:office:word"
+                      xmlns="http://www.w3.org/TR/REC-html40">
+                <head><meta charset="utf-8"><title>%s</title>
+                <style>
+                body { font-family: '宋体', SimSun, serif; font-size: 12pt; line-height: 1.8; padding: 20px; }
+                h1 { font-size: 18pt; }
+                h2 { font-size: 15pt; }
+                h3 { font-size: 13pt; }
+                pre { background: #f5f5f5; padding: 8px; font-size: 10pt; }
+                code { background: #f0f0f0; padding: 1px 4px; font-size: 10pt; }
+                img { max-width: 100%%; }
+                table { border-collapse: collapse; }
+                td, th { border: 1px solid #ccc; padding: 4px 8px; }
+                </style></head>
+                <body>%s</body></html>""".formatted(title, body);
     }
 }
