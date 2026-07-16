@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -24,7 +25,8 @@ public class AiReportController {
 
     @PostMapping("/report/generate")
     public R<Map<String, Object>> generateReport(@RequestBody @Valid ReportRequest request) {
-        String content = aiReportManager.generateReport(request.getTopic(), request.getRequirements());
+        String content = aiReportManager.generateReport("system", UUID.randomUUID().toString(),
+                request.getTopic(), request.getRequirements());
         return R.ok(Map.of("topic", request.getTopic(), "content", content));
     }
 }

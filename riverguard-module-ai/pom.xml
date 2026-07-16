@@ -35,5 +35,10 @@
             <artifactId>agentscope-extensions-model-openai</artifactId>
             <version>2.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope-harness</artifactId>
+            <version>2.0.0</version>
+        </dependency>
     </dependencies>
 </project>

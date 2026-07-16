@@ -27,14 +27,14 @@ public class AiChatController {
 
     @PostMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter chat(@RequestBody @Valid ChatRequest request, Principal principal) {
+        String userId = principal.getName();
         String sessionId = request.getSessionId() != null
-                ? principal.getName() + "-" + request.getSessionId()
-                : principal.getName() + "-" + UUID.randomUUID();
+                ? request.getSessionId()
+                : UUID.randomUUID().toString();
 
-        SseEmitter emitter = new SseEmitter(300000L); // 超时时间：300秒（5分钟）
+        SseEmitter emitter = new SseEmitter(300000L);
 
-        // 流式编程，不需要变量接收，直接链式调用
-        aiAgentManager.chatStream(sessionId, request.getMessage())
+        aiAgentManager.chatStream(userId, sessionId, request.getMessage())
                 .subscribe(
                         event -> {
                             try {
